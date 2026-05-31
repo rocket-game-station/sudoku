@@ -376,11 +376,11 @@ button{font-family:inherit}
 .stats-modal-body{overflow-y:auto;padding:0 20px 20px;flex:1}
 .stats-section-title{font-size:.7rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px}
 .stats-overview{background:linear-gradient(135deg,rgba(79,110,247,.08),rgba(168,85,247,.05));border:1px solid rgba(79,110,247,.15);border-radius:16px;padding:16px}
-.stats-overview-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:14px}
+.stats-overview-row{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;margin-bottom:14px}
 .stats-ov-item{text-align:center}
 .stats-ov-val{font-size:1.6rem;font-weight:900;color:var(--text)}
 .stats-ov-lbl{font-size:.65rem;color:var(--text-muted);margin-top:3px}
-.stats-ov-divider{width:1px;background:var(--border);margin:8px 0}
+.stats-ov-divider{background:var(--border);align-self:stretch;width:1px}
 .stats-time-row{background:var(--surface);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
 .stats-time-lbl{font-size:.7rem;color:var(--text-muted)}
 .stats-time-val{font-size:1rem;font-weight:800;color:var(--text)}
@@ -395,11 +395,11 @@ button{font-family:inherit}
 .diff-mini-stat{text-align:center}
 .diff-mini-val{font-size:.85rem;font-weight:800;color:var(--text)}
 .diff-mini-lbl{font-size:.6rem;color:var(--text-muted)}
-.streak-row{background:linear-gradient(135deg,#ff6b6b,#ff8e53);border-radius:14px;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.streak-row{background:linear-gradient(135deg,#ff6b6b,#ff8e53);border-radius:14px;padding:16px;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center}
 .streak-item{text-align:center;color:#fff}
 .streak-item-val{font-size:1.6rem;font-weight:900}
 .streak-item-lbl{font-size:.65rem;opacity:.8;margin-top:2px}
-.streak-divider{width:1px;background:rgba(255,255,255,.3);margin:8px 0}
+.streak-divider{background:rgba(255,255,255,.3);align-self:stretch;width:1px}
 .misc-list{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .misc-row{display:flex;align-items:center;padding:11px 14px;gap:10px;border-bottom:1px solid var(--border)}
 .misc-row:last-child{border-bottom:none}
@@ -489,6 +489,53 @@ button{font-family:inherit}
 .join-banner strong{font-size:1rem;font-weight:900;display:block;margin-bottom:3px}
 .join-banner span{font-size:.8rem;opacity:.8}
 
+/* ── NEW PUZZLE CARD ── */
+.new-puzzle-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.np-hdr-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.np-icon-tile{width:50px;height:50px;border-radius:14px;flex-shrink:0;background:linear-gradient(135deg,#4f6ef7,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff}
+.np-title{font-size:1.1rem;font-weight:900;color:var(--text)}
+.np-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px}
+.new-puzzle-card .play-btn{margin-bottom:10px}
+.new-puzzle-card .challenge-btn{margin-bottom:0}
+
+/* ── DIFFICULTY CARD GRID ── */
+.diff-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.diff-card-item{position:relative;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:14px;cursor:pointer;transition:all .18s;user-select:none}
+.diff-card-item:hover{border-color:var(--primary)}
+.diff-card-item.selected{border-color:#22c55e;border-width:2px;background:rgba(34,197,94,.05)}
+.diff-card-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:900;opacity:0;transition:opacity .18s}
+.diff-card-item.selected .diff-card-check{opacity:1}
+.diff-card-icon-bg{width:44px;height:44px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.diff-card-name{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:2px}
+.diff-card-clues{font-size:.72rem;color:var(--text-muted);margin-bottom:7px}
+.diff-card-best{font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+
+/* ── HOME BOTTOM STAT BAR ── */
+.home-stat-bar{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 0;margin-top:4px;margin-bottom:16px;box-shadow:var(--shadow)}
+.hstat-item{flex:1;text-align:center;padding:0 8px}
+.hstat-item+.hstat-item{border-left:1px solid var(--border)}
+.hstat-icon{display:block;font-size:.9rem;color:var(--text-muted);margin-bottom:3px}
+.hstat-val{display:block;font-size:1.35rem;font-weight:900;color:var(--primary)}
+.hstat-lbl{display:block;font-size:.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* ── SHARE MODAL ── */
+.share-wrap{max-width:360px;width:92%;background:var(--surface);border-radius:22px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+.share-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.share-hdr h2{font-size:1.1rem;font-weight:900;color:var(--text)}
+.share-option{display:flex;align-items:center;gap:14px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .2s,transform .15s}
+.share-option:last-child{margin-bottom:0}
+.share-option:hover{border-color:var(--primary);transform:translateY(-1px)}
+.share-option:active{transform:none}
+.share-opt-icon{font-size:1.5rem;flex-shrink:0}
+.share-opt-info{flex:1}
+.share-opt-title{font-size:.9rem;font-weight:700;color:var(--text)}
+.share-opt-sub{font-size:.7rem;color:var(--text-muted);margin-top:2px}
+.share-opt-arrow{color:var(--text-muted);font-size:1.1rem}
+
+/* ── COPY TOAST ── */
+.copy-toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--surface);padding:10px 22px;border-radius:22px;font-size:.85rem;font-weight:700;z-index:1000;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 @media(max-width:380px){.sp-tile{width:60px;height:60px;font-size:1.65rem}}
 </style>
 </head>
@@ -513,8 +560,8 @@ button{font-family:inherit}
     <div class="home-hdr">
       <span class="h-logo">Sudoku</span>
       <div class="h-btns">
-        <button class="icon-btn" id="homeStatsBtn" title="Statistics">📊</button>
-        <button class="icon-btn" id="homeThemeBtn">🌙</button>
+        <button class="icon-btn" id="homeShareBtn" title="Share">📤</button>
+        <button class="icon-btn" id="homeStatsBtn" title="Statistics">🏆</button>
         <button class="icon-btn" id="homeSettingsBtn" title="Settings">⚙️</button>
       </div>
     </div>
@@ -525,55 +572,55 @@ button{font-family:inherit}
       <span>Starting your puzzle now…</span>
     </div>
 
-    <div class="profile-card" id="profileCard">
-      <div class="avatar" id="homeAvatar">P</div>
-      <div class="pf-info">
-        <div class="pf-name" id="homeName">Player</div>
-        <div class="pf-level" id="homeLevel">🔰 Beginner</div>
-        <div class="pf-badge" id="homeBadge">0 wins</div>
+    <!-- Continue saved game (shown only when a game is in progress) -->
+    <button class="cont-btn" id="contBtn">↩  Continue Game</button>
+
+    <!-- ── NEW PUZZLE CARD ── -->
+    <div class="new-puzzle-card">
+      <div class="np-hdr-row">
+        <div class="np-icon-tile">#</div>
+        <div>
+          <div class="np-title">New Puzzle</div>
+          <div class="np-sub">Select difficulty and start playing</div>
+        </div>
       </div>
-      <button class="pf-edit" id="editProfileBtn">Edit</button>
-    </div>
 
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-n" id="statPlayed">0</div><div class="stat-l">Played</div></div>
-      <div class="stat-card"><div class="stat-n" id="statWon">0</div><div class="stat-l">Won</div></div>
-      <div class="stat-card"><div class="stat-n" id="statRate">—</div><div class="stat-l">Win Rate</div></div>
-    </div>
+      <!-- 2×2 Difficulty card grid (rendered by JS) -->
+      <div class="diff-card-grid" id="diffCardGrid"></div>
 
-    <div class="sec-label">Select Difficulty</div>
-    <div class="h-diff" id="homeDiff">
-      <button class="h-diff-btn active" data-d="easy">Easy</button>
-      <button class="h-diff-btn" data-d="medium">Medium</button>
-      <button class="h-diff-btn" data-d="hard">Hard</button>
-      <button class="h-diff-btn" data-d="expert">Expert</button>
+      <button class="play-btn" id="playBtn">▶  New Game (🌱 Easy)</button>
+      <button class="challenge-btn" id="challengeBtn">⚔️  Challenge Friend</button>
     </div>
 
     <!-- ── DAILY CHALLENGE CARD ── -->
     <div class="daily-card" id="dailyCard">
       <div class="daily-top">
         <div class="daily-title-wrap">
-          <div class="daily-icon">📅</div>
+          <div class="daily-cal">
+            <div class="daily-cal-month" id="dailyCalMonth">JUL</div>
+            <div class="daily-cal-day" id="dailyCalDay">17</div>
+          </div>
           <div>
             <div class="daily-title">Daily Challenge</div>
-            <div class="daily-sub" id="dailySub">Loading…</div>
+            <div class="daily-sub" id="dailySub">Easy difficulty</div>
           </div>
         </div>
-        <div class="daily-streak-wrap">
-          <span id="dailyStreakEmoji">🔥</span>
-          <span class="daily-streak-num" id="dailyStreakNum">0</span>
-          <span class="daily-streak-lbl">streak</span>
-        </div>
+        <button class="daily-play-btn" id="dailyPlayBtn">Play</button>
       </div>
-      <div class="daily-bottom">
-        <div class="daily-countdown" id="dailyCountdown">Next in --:--:--</div>
-        <button class="daily-play-btn" id="dailyPlayBtn">Play Today →</button>
+      <div class="daily-streak-box">
+        <div class="daily-streak-left">
+          <span class="daily-streak-icon" id="dailyStreakEmoji">🔥</span>
+          <div>
+            <div class="daily-streak-val"><span id="dailyStreakNum">0</span> days streak</div>
+            <div class="daily-streak-hint" id="dailyStreakHint">Start your streak!</div>
+          </div>
+        </div>
+        <div class="daily-streak-best">Best: <span id="dailyStreakBest">0</span> days</div>
+      </div>
+      <div class="daily-warn" id="dailyWarn">
+        <span>⚠️</span><span>Play today to keep your streak alive!</span>
       </div>
     </div>
-
-    <button class="play-btn" id="playBtn">▶  New Game</button>
-    <button class="cont-btn" id="contBtn">↩  Continue Game</button>
-    <button class="challenge-btn" id="challengeBtn">⚔️  Challenge a Friend</button>
 
     <!-- Achievements mini -->
     <div class="achiev-mini" id="achievMini">
@@ -588,11 +635,24 @@ button{font-family:inherit}
       <span class="achiev-mini-arrow">›</span>
     </div>
 
-    <div class="sec-label">Best Times</div>
-    <div class="bt-grid" id="btGrid"></div>
-
-    <div class="sec-label">Recent Scores</div>
-    <div class="scores-wrap" id="scoresList"></div>
+    <!-- Bottom stat bar -->
+    <div class="home-stat-bar">
+      <div class="hstat-item">
+        <span class="hstat-icon">#</span>
+        <span class="hstat-val" id="hstatPlayed">0</span>
+        <span class="hstat-lbl">Puzzles</span>
+      </div>
+      <div class="hstat-item">
+        <span class="hstat-icon">🏆</span>
+        <span class="hstat-val" id="hstatWon">0</span>
+        <span class="hstat-lbl">Wins</span>
+      </div>
+      <div class="hstat-item">
+        <span class="hstat-icon">%</span>
+        <span class="hstat-val" id="hstatRate">—</span>
+        <span class="hstat-lbl">Win Rate</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -656,7 +716,8 @@ button{font-family:inherit}
       <div class="ms-item"><div class="ms-val" id="wMist">—</div><div class="ms-lbl">Mistakes</div></div>
       <div class="ms-item"><div class="ms-val" id="wDiff">—</div><div class="ms-lbl">Difficulty</div></div>
     </div>
-    <button class="modal-btn" onclick="closeWin();newGame()">Play Again</button>
+    <button class="modal-btn" onclick="shareWinResult()">📤 Share Result</button>
+    <button class="modal-btn outline" onclick="closeWin();newGame()">Play Again</button>
     <button class="modal-btn outline" onclick="closeWin();goHome()">Home</button>
   </div>
 </div>
@@ -823,6 +884,11 @@ button{font-family:inherit}
         <div class="settings-row-info"><div class="settings-row-title">Statistics</div><div class="settings-row-sub">Detailed game stats</div></div>
         <span class="settings-row-arrow">›</span>
       </div>
+      <div class="settings-action-row" onclick="closeSettings();openShareModal()">
+        <span class="settings-row-icon">📤</span>
+        <div class="settings-row-info"><div class="settings-row-title">Share App</div><div class="settings-row-sub">Invite friends to play</div></div>
+        <span class="settings-row-arrow">›</span>
+      </div>
 
       <div class="settings-sec">Legal</div>
       <div class="settings-action-row" onclick="openLegal('privacy')">
@@ -917,6 +983,43 @@ button{font-family:inherit}
   </div>
 </div>
 
+<!-- ═══ SHARE MODAL ═══ -->
+<div class="modal-bg" id="shareModal">
+  <div class="share-wrap">
+    <div class="share-hdr">
+      <h2>📤 Share</h2>
+      <button class="ach-close-btn" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="share-option" onclick="shareApp()">
+      <span class="share-opt-icon">🎮</span>
+      <div class="share-opt-info">
+        <div class="share-opt-title">Share App</div>
+        <div class="share-opt-sub">Invite friends to play Sudoku</div>
+      </div>
+      <span class="share-opt-arrow">›</span>
+    </div>
+    <div class="share-option" onclick="shareChallenge()">
+      <span class="share-opt-icon">⚔️</span>
+      <div class="share-opt-info">
+        <div class="share-opt-title">Challenge a Friend</div>
+        <div class="share-opt-sub">Create a puzzle room and share the link or PIN</div>
+      </div>
+      <span class="share-opt-arrow">›</span>
+    </div>
+    <div class="share-option" onclick="copyAppLink()">
+      <span class="share-opt-icon">🔗</span>
+      <div class="share-opt-info">
+        <div class="share-opt-title">Copy Link</div>
+        <div class="share-opt-sub">Copy a direct link to this game</div>
+      </div>
+      <span class="share-opt-arrow">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- Copy Toast -->
+<div class="copy-toast" id="copyToast">✓ Copied!</div>
+
 <div class="confetti-wrap" id="confetti"></div>
 
 <script>
@@ -1000,13 +1103,13 @@ function showScreen(id){
 function applyTheme(dark){
   document.body.classList.toggle('dark',dark);
   const icon=dark?'☀️':'🌙';
-  document.getElementById('homeThemeBtn').textContent=icon;
+  const htb=document.getElementById('homeThemeBtn');if(htb)htb.textContent=icon;
   document.getElementById('gameThemeBtn').textContent=icon;
   store.theme=dark?'dark':'light';
   saveStore();
 }
 function toggleTheme(){applyTheme(!document.body.classList.contains('dark'));}
-document.getElementById('homeThemeBtn').addEventListener('click',toggleTheme);
+document.getElementById('homeThemeBtn')?.addEventListener('click',toggleTheme);
 document.getElementById('gameThemeBtn').addEventListener('click',toggleTheme);
 
 // ═══════════════════════════════════════════════════
@@ -1020,27 +1123,49 @@ function getRank(w){return RANKS.find(r=>w>=r.min)||RANKS[RANKS.length-1];}
 // ═══════════════════════════════════════════════════
 function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function renderHome(){
-  const rank=getRank(store.won);
-  const av=document.getElementById('homeAvatar');
-  av.textContent=store.name.charAt(0)||'P';
-  av.style.background=store.avatarColor;
-  document.getElementById('homeName').textContent=store.name;
-  document.getElementById('homeLevel').textContent=`${rank.icon} ${rank.name}`;
-  document.getElementById('homeBadge').textContent=`${store.won} win${store.won!==1?'s':''}`;
-  document.getElementById('statPlayed').textContent=store.played;
-  document.getElementById('statWon').textContent=store.won;
-  document.getElementById('statRate').textContent=store.played>0?Math.round(store.won/store.played*100)+'%':'—';
+  const played=store.played||0,won=store.won||0;
+  document.getElementById('hstatPlayed').textContent=played;
+  document.getElementById('hstatWon').textContent=won;
+  document.getElementById('hstatRate').textContent=played>0?Math.round(won/played*100)+'%':'—';
   document.getElementById('contBtn').classList.toggle('show',!!store.savedGame);
+  renderDiffCards();
+  updatePlayBtn();
   updateAchievMini();
-  const btg=document.getElementById('btGrid');
-  btg.innerHTML='';
-  ['easy','medium','hard','expert'].forEach(d=>{
-    const t=store.bestTimes[d];
-    btg.innerHTML+=`<div class="bt-card"><div class="bt-diff">${d}</div><div class="bt-val ${t?'':'none'}">${t?fmtTime(t):'No record'}</div></div>`;
-  });
-  const sl=document.getElementById('scoresList');
-  if(!store.scores.length){sl.innerHTML='<div class="no-scores">No games played yet.<br>Start your first puzzle!</div>';}
-  else{sl.innerHTML=store.scores.slice(0,10).map(s=>`<div class="score-row"><span class="diff-badge badge-${s.diff}">${s.diff}</span><div class="sc-info"><div class="sc-time">${fmtTime(s.time)}</div><div class="sc-meta">${s.mistakes} mistake${s.mistakes!==1?'s':''}</div></div><div class="sc-date">${s.date}</div></div>`).join('');}
+}
+
+// ── Difficulty Card Grid ──
+const DIFF_META={
+  easy:{icon:'🌱',label:'Easy',clues:'38+ clues'},
+  medium:{icon:'🔥',label:'Medium',clues:'30-37 clues'},
+  hard:{icon:'💪',label:'Hard',clues:'25-29 clues'},
+  expert:{icon:'🏆',label:'Expert',clues:'22-24 clues'},
+};
+function renderDiffCards(){
+  const grid=document.getElementById('diffCardGrid');
+  if(!grid)return;
+  grid.innerHTML=['easy','medium','hard','expert'].map(d=>{
+    const m=DIFF_META[d];
+    const sel=d===difficulty;
+    const best=store.bestTimes[d];
+    return`<div class="diff-card-item${sel?' selected':''}" onclick="selectDiff('${d}')">
+      <div class="diff-card-check">✓</div>
+      <div class="diff-card-icon-bg">${m.icon}</div>
+      <div class="diff-card-name">${m.label}</div>
+      <div class="diff-card-clues">${m.clues}</div>
+      <div class="diff-card-best">🏆 ${best?fmtTime(best):'No record'}</div>
+    </div>`;
+  }).join('');
+}
+function selectDiff(d){
+  difficulty=d;
+  renderDiffCards();
+  updatePlayBtn();
+  document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===d));
+}
+function updatePlayBtn(){
+  const m=DIFF_META[difficulty]||DIFF_META.easy;
+  const btn=document.getElementById('playBtn');
+  if(btn)btn.textContent=`▶  New Game (${m.icon} ${m.label})`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -1074,25 +1199,45 @@ let _dailyCountdownTimer=null;
 function renderDailyCard(){
   const info=getDailyInfo();
   const done=isDailyCompleted();
-  const emoji=store.currentStreak>=30?'🔥':store.currentStreak>=14?'⚡':store.currentStreak>=7?'✨':store.currentStreak>=3?'🌟':'⭐';
-  document.getElementById('dailySub').textContent=
-    `${info.difficulty.charAt(0).toUpperCase()+info.difficulty.slice(1)} · Day ${info.dayNumber}`;
+  const streak=store.currentStreak||0;
+
+  // Calendar widget
+  const d=new Date(info.today+'T00:00:00Z');
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dailyCalMonth').textContent=MONTHS[d.getUTCMonth()].toUpperCase();
+  document.getElementById('dailyCalDay').textContent=d.getUTCDate();
+
+  // Subtitle
+  const dc=info.difficulty.charAt(0).toUpperCase()+info.difficulty.slice(1);
+  document.getElementById('dailySub').textContent=dc+' difficulty';
+
+  // Streak section
+  const emoji=streak>=30?'🔥':streak>=14?'⚡':streak>=7?'✨':streak>=3?'🌟':'⭐';
   document.getElementById('dailyStreakEmoji').textContent=emoji;
-  document.getElementById('dailyStreakNum').textContent=store.currentStreak;
+  document.getElementById('dailyStreakNum').textContent=streak;
+  document.getElementById('dailyStreakBest').textContent=store.longestStreak||0;
+  document.getElementById('dailyStreakHint').textContent=
+    done?'Completed today! 🎉':streak>0?'Keep it up!':'Start your streak!';
+
+  // Play button
   const btn=document.getElementById('dailyPlayBtn');
   if(done){
     const t=store.dailyBestTimes[info.today];
-    btn.textContent=t?`✓ Done · ${fmtTime(t)}`:'✓ Done';
+    btn.textContent=t?`✓ ${fmtTime(t)}`:'✓ Done';
     btn.disabled=true;
+    btn.style.opacity='0.7';
   }else{
-    btn.textContent='Play Today →';
+    btn.textContent='Play';
     btn.disabled=false;
+    btn.style.opacity='1';
   }
-  // Countdown
-  if(_dailyCountdownTimer)clearInterval(_dailyCountdownTimer);
-  const updateCD=()=>document.getElementById('dailyCountdown').textContent='Next in '+getCountdown();
-  updateCD();
-  _dailyCountdownTimer=setInterval(updateCD,1000);
+
+  // Warning bar — show only when not done AND streak would be broken (streak > 0)
+  const warn=document.getElementById('dailyWarn');
+  if(warn)warn.classList.toggle('show',!done&&streak>0);
+
+  // Clear any old countdown timer (not shown in new design)
+  if(_dailyCountdownTimer){clearInterval(_dailyCountdownTimer);_dailyCountdownTimer=null;}
 }
 
 let dailyMode=false;
@@ -1102,7 +1247,7 @@ function startDailyGame(){
   difficulty=info.difficulty;
   rng=makeRng(info.seed);
   document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===difficulty));
-  document.getElementById('homeDiff').querySelectorAll('.h-diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===difficulty));
+  renderDiffCards();
   document.getElementById('dailyBadge').classList.add('show');
   document.getElementById('challengeBadge').classList.remove('show');
   showScreen('scr-game');
@@ -1111,13 +1256,6 @@ function startDailyGame(){
 document.getElementById('dailyPlayBtn').addEventListener('click',startDailyGame);
 
 let difficulty='easy';
-document.getElementById('homeDiff').querySelectorAll('.h-diff-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    difficulty=btn.dataset.d;
-    document.getElementById('homeDiff').querySelectorAll('.h-diff-btn').forEach(b=>b.classList.toggle('active',b===btn));
-    syncGameDiff();
-  });
-});
 function syncGameDiff(){
   document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===difficulty));
 }
@@ -1152,9 +1290,9 @@ function saveProfile(){
   store.avatarColor=editColor;
   saveStore();closeEdit();renderHome();
 }
-document.getElementById('editProfileBtn').addEventListener('click',openEdit);
-document.getElementById('profileCard').addEventListener('click',e=>{if(!e.target.classList.contains('pf-edit'))return;openEdit();});
-document.getElementById('homeSettingsBtn').addEventListener('click',openEdit);
+document.getElementById('editProfileBtn')?.addEventListener('click',openEdit);
+document.getElementById('profileCard')?.addEventListener('click',e=>{if(!e.target.classList.contains('pf-edit'))return;openEdit();});
+// homeSettingsBtn opens Settings (wired below in openSettings section)
 
 // ═══════════════════════════════════════════════════
 //  SAVE / LOAD GAME
@@ -1277,7 +1415,7 @@ function startChallengeGame(diff,seed,pin){
   difficulty=diff;
   rng=makeRng(seed);
   document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===diff));
-  document.getElementById('homeDiff').querySelectorAll('.h-diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===diff));
+  renderDiffCards();
   document.getElementById('challengeBadge').classList.add('show');
   showScreen('scr-game');
   newGame();
@@ -1817,7 +1955,7 @@ document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     difficulty=btn.dataset.d;
     document.getElementById('gameDiff').querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active',b===btn));
-    document.getElementById('homeDiff').querySelectorAll('.h-diff-btn').forEach(b=>b.classList.toggle('active',b.dataset.d===difficulty));
+    renderDiffCards();
     newGame();
   });
 });
@@ -2021,6 +2159,62 @@ function openLegal(type){
   document.getElementById('legalModal').classList.add('on');
 }
 function closeLegal(){document.getElementById('legalModal').classList.remove('on');}
+
+// ═══════════════════════════════════════════════════
+//  SHARE
+// ═══════════════════════════════════════════════════
+function openShareModal(){document.getElementById('shareModal').classList.add('on');}
+function closeShareModal(){document.getElementById('shareModal').classList.remove('on');}
+
+function _showCopyToast(msg){
+  const t=document.getElementById('copyToast');
+  t.textContent='✓ '+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function shareApp(){
+  closeShareModal();
+  const url=location.href.split('?')[0];
+  const title='🧩 Sudoku — Daily Puzzles & Challenges';
+  const text='Play Sudoku with daily challenges, achievements, and multiplayer! 🎮';
+  if(navigator.share){
+    navigator.share({title,text,url}).catch(()=>{});
+  }else{
+    navigator.clipboard.writeText(url)
+      .then(()=>_showCopyToast('App link copied!'))
+      .catch(()=>prompt('Copy this link:',url));
+  }
+}
+
+function shareChallenge(){
+  closeShareModal();
+  openChallengeModal();
+}
+
+function copyAppLink(){
+  closeShareModal();
+  const url=location.href.split('?')[0];
+  navigator.clipboard.writeText(url)
+    .then(()=>_showCopyToast('Link copied!'))
+    .catch(()=>prompt('Copy this link:',url));
+}
+
+// Share win result (called from win modal)
+function shareWinResult(){
+  const url=location.href.split('?')[0];
+  const diff=(difficulty||'').charAt(0).toUpperCase()+(difficulty||'').slice(1);
+  const txt=`🧩 I just solved a ${diff} Sudoku!\n⏱ Time: ${fmtTime(seconds)}  ❌ Mistakes: ${mistakes}\nCan you beat me? ${url}`;
+  if(navigator.share){
+    navigator.share({title:'Sudoku Result',text:txt,url}).catch(()=>{});
+  }else{
+    navigator.clipboard.writeText(txt)
+      .then(()=>_showCopyToast('Result copied!'))
+      .catch(()=>prompt('Share this:',txt));
+  }
+}
+
+document.getElementById('homeShareBtn').addEventListener('click',openShareModal);
 
 // ═══════════════════════════════════════════════════
 //  SPLASH
