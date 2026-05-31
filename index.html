@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Sudoku</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <style>
 :root{
   --bg:#f0f4ff;--surface:#fff;--surface2:#eef1f8;--border:#d0d7e8;
@@ -532,6 +534,62 @@ button{font-family:inherit}
 .share-opt-sub{font-size:.7rem;color:var(--text-muted);margin-top:2px}
 .share-opt-arrow{color:var(--text-muted);font-size:1.1rem}
 
+/* ── OPPONENT BAR (game screen) ── */
+.opponent-bar{display:none;background:linear-gradient(135deg,rgba(247,37,133,.07),rgba(114,9,183,.04));border:1px solid rgba(247,37,133,.22);border-radius:14px;padding:11px 14px;margin-bottom:14px;align-items:center;gap:12px}
+.opponent-bar.show{display:flex}
+.opp-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f72585,#7209b7);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:900;color:#fff;flex-shrink:0}
+.opp-info{flex:1;min-width:0}
+.opp-name{font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.opp-progress-wrap{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.opp-progress-fill{height:100%;background:linear-gradient(90deg,#f72585,#7209b7);border-radius:3px;transition:width .5s}
+.opp-right{text-align:right;flex-shrink:0}
+.opp-pct{font-size:.9rem;font-weight:900;color:var(--text)}
+.opp-cells{font-size:.65rem;color:var(--text-muted)}
+.online-badge{display:none;align-items:center;gap:5px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;font-size:.65rem;font-weight:800;padding:4px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+.online-badge.show{display:flex}
+
+/* ── ROOM WAITING MODAL ── */
+.room-wait-wrap{max-width:340px;width:92%;background:var(--surface);border-radius:22px;padding:28px 24px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+.room-code-big{font-size:2.6rem;font-weight:900;letter-spacing:10px;color:var(--primary);margin:14px 0;font-variant-numeric:tabular-nums}
+.room-qr{background:#fff;border-radius:12px;padding:8px;margin:6px auto 12px;width:fit-content}
+.room-wait-status{font-size:.85rem;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0}
+@keyframes pulseDot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.room-players{background:var(--surface2);border-radius:12px;padding:10px 14px;margin-bottom:14px;text-align:left}
+.room-player-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.room-player-row+.room-player-row{border-top:1px solid var(--border)}
+
+/* ── LEADERBOARD MODAL ── */
+.lb-wrap{max-width:420px;width:92%;background:var(--surface);border-radius:22px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+.lb-hdr{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.lb-hdr h2{font-size:1.2rem;font-weight:900;color:var(--text)}
+.lb-diff-tabs{display:flex;gap:4px;padding:12px 20px 0;flex-shrink:0}
+.lb-tab{flex:1;padding:8px 4px;border:1.5px solid var(--border);background:none;border-radius:10px;font-size:.7rem;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all .15s;font-family:inherit}
+.lb-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.lb-body{overflow-y:auto;padding:12px 20px 20px;flex:1}
+.lb-entry{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:var(--surface2)}
+.lb-entry.mine{background:rgba(79,110,247,.1);border:1px solid rgba(79,110,247,.25)}
+.lb-rank{font-size:.85rem;font-weight:900;width:26px;text-align:center;flex-shrink:0;color:var(--text-muted)}
+.lb-rank.gold{color:#f59e0b}.lb-rank.silver{color:#94a3b8}.lb-rank.bronze{color:#b45309}
+.lb-entry-info{flex:1;min-width:0}
+.lb-entry-name{font-size:.88rem;font-weight:700;color:var(--text)}
+.lb-entry-meta{font-size:.68rem;color:var(--text-muted);margin-top:2px}
+.lb-entry-time{font-size:1rem;font-weight:900;color:var(--primary);flex-shrink:0}
+.lb-empty{text-align:center;padding:32px 16px;color:var(--text-muted);font-size:.9rem}
+.lb-loading{text-align:center;padding:32px;color:var(--text-muted)}
+
+/* ── TOURNAMENT CARD ── */
+.tournament-card{background:linear-gradient(135deg,#7209b7 0%,#4361ee 100%);border-radius:20px;padding:16px 18px;margin-bottom:16px;box-shadow:0 8px 28px rgba(114,9,183,.32);cursor:pointer;transition:transform .15s;display:none}
+.tournament-card:hover{transform:translateY(-2px)}
+.t-top-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.t-badge{background:rgba(255,255,255,.22);border-radius:20px;padding:3px 11px;font-size:.65rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px}
+.t-title{font-size:1rem;font-weight:900;color:#fff}
+.t-sub{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:2px}
+.t-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.t-stat{background:rgba(255,255,255,.14);border-radius:10px;padding:8px;text-align:center}
+.t-stat-val{font-size:.95rem;font-weight:900;color:#fff}
+.t-stat-lbl{font-size:.58rem;color:rgba(255,255,255,.7);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
 /* ── COPY TOAST ── */
 .copy-toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--surface);padding:10px 22px;border-radius:22px;font-size:.85rem;font-weight:700;z-index:1000;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -622,6 +680,22 @@ button{font-family:inherit}
       </div>
     </div>
 
+    <!-- ── TOURNAMENT CARD (shown when active tournament exists) ── -->
+    <div class="tournament-card" id="tournamentCard" onclick="startTournamentGame()">
+      <div class="t-top-row">
+        <div>
+          <div class="t-title" id="tCardTitle">Daily Tournament</div>
+          <div class="t-sub" id="tCardSub">Compete with players worldwide</div>
+        </div>
+        <div class="t-badge" id="tCardBadge">Daily</div>
+      </div>
+      <div class="t-stats-row">
+        <div class="t-stat"><div class="t-stat-val" id="tCardPlayers">—</div><div class="t-stat-lbl">Players</div></div>
+        <div class="t-stat"><div class="t-stat-val" id="tCardBest">—</div><div class="t-stat-lbl">Best</div></div>
+        <div class="t-stat"><div class="t-stat-val" id="tCardMine">Play!</div><div class="t-stat-lbl">My Time</div></div>
+      </div>
+    </div>
+
     <!-- Achievements mini -->
     <div class="achiev-mini" id="achievMini">
       <div class="achiev-mini-left">
@@ -665,6 +739,7 @@ button{font-family:inherit}
       <div style="display:flex;align-items:center;gap:8px">
         <div class="daily-badge" id="dailyBadge">📅 Daily</div>
         <div class="challenge-badge" id="challengeBadge">⚔️ Challenge</div>
+        <div class="online-badge" id="onlineBadge">🌐 Online</div>
         <button class="icon-btn" id="gameThemeBtn">🌙</button>
       </div>
     </div>
@@ -677,6 +752,21 @@ button{font-family:inherit}
       <div class="timer-wrap">
         <span class="timer-val" id="timerVal">00:00</span>
         <span class="pause-btn" id="pauseBtn">⏸</span>
+      </div>
+    </div>
+
+    <!-- Opponent progress bar (online mode only) -->
+    <div class="opponent-bar" id="opponentBar">
+      <div class="opp-avatar" id="oppAvatar">?</div>
+      <div class="opp-info">
+        <div class="opp-name" id="oppName">Opponent</div>
+        <div class="opp-progress-wrap">
+          <div class="opp-progress-fill" id="oppProgressFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="opp-right">
+        <div class="opp-pct" id="oppPct">0%</div>
+        <div class="opp-cells" id="oppCells">0/81 cells</div>
       </div>
     </div>
 
@@ -804,7 +894,10 @@ button{font-family:inherit}
           <button class="h-diff-btn" data-d="hard">Hard</button>
           <button class="h-diff-btn" data-d="expert">Expert</button>
         </div>
-        <button class="modal-btn" id="generateBtn">Generate Challenge →</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+          <button class="modal-btn outline" id="generateBtn">🔒 Local PIN</button>
+          <button class="modal-btn" id="onlineRoomBtn">🌐 Online Room</button>
+        </div>
       </div>
       <!-- Step 2: QR + PIN -->
       <div id="cStep2" style="display:none">
@@ -980,6 +1073,40 @@ button{font-family:inherit}
     <div class="ach-toast-name" id="achToastName">—</div>
     <div class="ach-toast-desc" id="achToastDesc">—</div>
     <div class="ach-toast-rarity" id="achToastRarity">Common</div>
+  </div>
+</div>
+
+<!-- ═══ ROOM WAITING MODAL ═══ -->
+<div class="modal-bg" id="roomWaitModal">
+  <div class="room-wait-wrap">
+    <div class="modal-emoji">⚔️</div>
+    <h2 id="roomWaitTitle">Room Created!</h2>
+    <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:4px">Share this code with your opponent:</p>
+    <div class="room-code-big" id="roomCodeDisplay">——</div>
+    <div class="room-qr" id="roomQrCode"></div>
+    <div class="room-wait-status">
+      <div class="pulse-dot"></div>
+      <span id="roomWaitStatus">Waiting for opponent…</span>
+    </div>
+    <div class="room-players" id="roomPlayersList"></div>
+    <button class="modal-btn outline" onclick="cancelRoom()" style="margin-top:0">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ LEADERBOARD MODAL ═══ -->
+<div class="modal-bg" id="lbModal">
+  <div class="lb-wrap">
+    <div class="lb-hdr">
+      <h2>🏆 Leaderboard</h2>
+      <button class="ach-close-btn" onclick="closeLbModal()">✕</button>
+    </div>
+    <div class="lb-diff-tabs">
+      <button class="lb-tab active" data-d="easy" onclick="setLbDiff('easy',this)">Easy</button>
+      <button class="lb-tab" data-d="medium" onclick="setLbDiff('medium',this)">Medium</button>
+      <button class="lb-tab" data-d="hard" onclick="setLbDiff('hard',this)">Hard</button>
+      <button class="lb-tab" data-d="expert" onclick="setLbDiff('expert',this)">Expert</button>
+    </div>
+    <div class="lb-body" id="lbBody"><div class="lb-loading">Loading…</div></div>
   </div>
 </div>
 
@@ -1263,9 +1390,14 @@ document.getElementById('playBtn').addEventListener('click',()=>{store.savedGame
 document.getElementById('contBtn').addEventListener('click',()=>{if(store.savedGame){showScreen('scr-game');loadSavedGame();}});
 
 function goHome(){
+  if(typeof cleanupOnlineMode==='function')cleanupOnlineMode();
   saveCurrentGame();
   renderHome();
   renderDailyCard();
+  // Reset mode badges
+  document.getElementById('challengeBadge').textContent='⚔️ Challenge';
+  document.getElementById('challengeBadge').classList.remove('show');
+  try{checkTournament();}catch(e){}
   showScreen('scr-home');
 }
 document.getElementById('backBtn').addEventListener('click',goHome);
@@ -1441,6 +1573,7 @@ function closeChallengeWin(){
   document.getElementById('challengeWinModal').classList.remove('on');
   challengeMode=false;challengeSeed=null;challengePin=null;
   document.getElementById('challengeBadge').classList.remove('show');
+  document.getElementById('challengeBadge').textContent='⚔️ Challenge';
 }
 function replayChallenge(){
   const s=challengeSeed,p=challengePin,d=difficulty;
@@ -1469,8 +1602,8 @@ document.querySelectorAll('#cDiffBar .h-diff-btn').forEach(btn=>{
 document.getElementById('generateBtn').addEventListener('click',generateChallenge);
 document.getElementById('copyPinBtn').addEventListener('click',copyPin);
 document.getElementById('startChallengeBtn').addEventListener('click',()=>startChallengeGame(cDiff,challengeSeed,challengePin));
-document.getElementById('joinBtn').addEventListener('click',joinChallenge);
-document.getElementById('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')joinChallenge();});
+document.getElementById('joinBtn').addEventListener('click',()=>{if(typeof tryJoinCode==='function')tryJoinCode();else joinChallenge();});
+document.getElementById('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter'){if(typeof tryJoinCode==='function')tryJoinCode();else joinChallenge();}});
 
 // ═══════════════════════════════════════════════════
 //  ACHIEVEMENTS
@@ -1689,7 +1822,7 @@ function renderStatsModal(){
   </div>`;
   document.getElementById('statsModalBody').innerHTML=html;
 }
-document.getElementById('homeStatsBtn').addEventListener('click',openStatsModal);
+document.getElementById('homeStatsBtn').addEventListener('click',()=>{if(typeof openLbModal==='function')openLbModal();else openStatsModal();});
 
 // ═══════════════════════════════════════════════════
 //  SUDOKU ENGINE
@@ -1752,6 +1885,8 @@ function generatePuzzle(diff){
 //  GAME CONTROL
 // ═══════════════════════════════════════════════════
 function newGame(keepDailyMode){
+  if(typeof cleanupOnlineMode==='function')cleanupOnlineMode();
+  if(typeof tournamentMode!=='undefined')tournamentMode=false;
   if(!keepDailyMode){dailyMode=false;document.getElementById('dailyBadge').classList.remove('show');}
   clearInterval(timerID);
   seconds=0;mistakes=0;paused=false;gameOver=false;notesMode=false;undoStack=[];selected=null;
@@ -1801,6 +1936,7 @@ function inputNumber(n){
     }else{checkWin();}
   }
   renderBoard();renderNumpad();
+  if(typeof updateOnlineProgress==='function')updateOnlineProgress();
 }
 function eraseCell(){
   if(!selected||gameOver||paused)return;
@@ -1829,6 +1965,7 @@ function giveHint(){
   board[r][c]=solution[r][c];notesGrid[r][c].clear();
   window.hintCells.add(`${r},${c}`);
   selected={r,c};checkWin();renderBoard();renderNumpad();
+  if(typeof updateOnlineProgress==='function')updateOnlineProgress();
 }
 function checkWin(){
   for(let r=0;r<9;r++) for(let c=0;c<9;c++) if(board[r][c]!==solution[r][c])return;
@@ -1849,8 +1986,17 @@ function checkWin(){
   if(dailyMode)recordDailyWin(seconds,mistakes);
   checkAchievements({difficulty,time:seconds,mistakes,hintsUsed,isChallenge:challengeMode,isDaily:dailyMode});
   store.savedGame=null;saveStore();
+  // Leaderboard & tournament submissions (fire-and-forget)
+  if(!dailyMode&&!challengeMode&&typeof onlineMode!=='undefined'&&!onlineMode){
+    try{submitToLeaderboard(difficulty,seconds,mistakes);}catch(e){}
+  }
+  if(typeof tournamentMode!=='undefined'&&tournamentMode){
+    try{submitTournamentScore(seconds,mistakes);}catch(e){}
+    tournamentMode=false;
+  }
   setTimeout(()=>{
-    if(dailyMode)showDailyWin();
+    if(typeof onlineMode!=='undefined'&&onlineMode)showOnlineWin();
+    else if(dailyMode)showDailyWin();
     else if(challengeMode)showChallengeWin();
     else showWin();
   },600);
@@ -2244,9 +2390,23 @@ function initSplash(){
     // GDPR on first launch
     if(!store.gdprConsentGiven)setTimeout(showGdpr,400);
 
-    // Handle incoming challenge from URL
+    // Refresh tournament card
+    try{checkTournament();}catch(e){}
+
+    // Handle ?room=CODE deep link (online room invite)
+    const roomParam=new URLSearchParams(window.location.search).get('room');
+    if(roomParam&&/^\d{6}$/.test(roomParam)&&parseInt(roomParam)>=500000){
+      setTimeout(()=>{
+        openChallengeModal();
+        switchCTab('join');
+        document.getElementById('pinInput').value=roomParam;
+        document.getElementById('joinError').textContent='Room code pre-filled — tap Join!';
+      },800);
+    }
+
+    // Handle incoming challenge from URL (?join=PIN for local challenge)
     const joinParam=new URLSearchParams(window.location.search).get('join');
-    if(joinParam){
+    if(joinParam&&!roomParam){
       const data=decodePin(joinParam);
       if(data){
         document.getElementById('joinBanner').classList.add('show');
@@ -2255,6 +2415,459 @@ function initSplash(){
     }
   },3000);
 }
+
+// ═══════════════════════════════════════════════════
+//  FIREBASE MODULE
+// ═══════════════════════════════════════════════════
+
+// ── Config & Init ──
+const _FB_CFG={
+  apiKey:"AIzaSyC7LeammhZEguj_j4qLeULtqPyy5DY7NCs",
+  authDomain:"sudoku-96650.firebaseapp.com",
+  databaseURL:"https://sudoku-96650-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"sudoku-96650",
+  storageBucket:"sudoku-96650.firebasestorage.app",
+  messagingSenderId:"758236903398",
+  appId:"1:758236903398:web:4c8c8caf53adf438ec8827"
+};
+let fbDb=null;
+try{
+  if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);
+  fbDb=firebase.database();
+}catch(e){console.warn('[Firebase] init error:',e);}
+
+// ── Identity ──
+function getDeviceId(){
+  let id=localStorage.getItem('sudoku_device_id');
+  if(!id){
+    try{
+      const buf=new Uint8Array(16);crypto.getRandomValues(buf);
+      id=[...buf].map(b=>b.toString(16).padStart(2,'0')).join('');
+    }catch(e){id=Date.now().toString(16)+Math.random().toString(16).slice(2);}
+    localStorage.setItem('sudoku_device_id',id);
+  }
+  return id;
+}
+function getSessionPlayerId(){
+  let id=sessionStorage.getItem('sudoku_player_id');
+  if(!id){
+    id=Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10);
+    sessionStorage.setItem('sudoku_player_id',id);
+  }
+  return id;
+}
+function escHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// ── Online Room State ──
+let onlineMode=false,onlineRoomId=null,onlinePlayerId=null,onlineOpponentId=null;
+let onlineHosted=false,onlineRoomRef=null,onlineWon=false;
+
+// ── Tournament State ──
+let tournamentMode=false,tournamentId=null,activeTournament=null;
+
+// ── Online Result Overlay (injected dynamically) ──
+(function createOnlineOverlay(){
+  const el=document.createElement('div');
+  el.id='onlineResultOverlay';
+  el.style.cssText='display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);align-items:center;justify-content:center';
+  el.innerHTML=`<div style="background:var(--surface);border-radius:22px;padding:32px 28px;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.4);animation:pop .4s cubic-bezier(.175,.885,.32,1.275)">
+    <div style="font-size:3rem;margin-bottom:8px" id="orEmoji">🏆</div>
+    <h2 style="font-size:1.4rem;font-weight:900;color:var(--text);margin-bottom:8px" id="orTitle">You Won!</h2>
+    <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px" id="orSub"></p>
+    <div style="background:var(--surface2);border-radius:14px;padding:14px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
+      <div><div style="font-size:1.25rem;font-weight:900;color:var(--primary)" id="orTime">—</div><div style="font-size:.62rem;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Time</div></div>
+      <div><div style="font-size:1.25rem;font-weight:900;color:var(--text)" id="orMist">—</div><div style="font-size:.62rem;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Mistakes</div></div>
+    </div>
+    <button onclick="closeOnlineResult()" style="width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:14px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit">Back to Home</button>
+  </div>`;
+  document.body.appendChild(el);
+})();
+
+function showOnlineWin(){
+  onlineFinish();
+  document.getElementById('orEmoji').textContent='🏆';
+  document.getElementById('orTitle').textContent='You Won! 🎉';
+  document.getElementById('orSub').textContent='You finished before your opponent!';
+  document.getElementById('orTime').textContent=fmtTime(seconds);
+  document.getElementById('orMist').textContent=mistakes+(mistakes!==1?' mistakes':' mistake');
+  document.getElementById('onlineResultOverlay').style.display='flex';
+  spawnConfetti();
+}
+function showOnlineLose(oppName,oppTime){
+  document.getElementById('orEmoji').textContent='😞';
+  document.getElementById('orTitle').textContent='Opponent Won';
+  document.getElementById('orSub').textContent=`${escHtml(oppName||'Opponent')} finished in ${fmtTime(oppTime||0)}`;
+  document.getElementById('orTime').textContent=fmtTime(seconds);
+  document.getElementById('orMist').textContent=mistakes+(mistakes!==1?' mistakes':' mistake');
+  document.getElementById('onlineResultOverlay').style.display='flex';
+}
+function closeOnlineResult(){
+  document.getElementById('onlineResultOverlay').style.display='none';
+  cleanupOnlineMode();
+  goHome();
+}
+
+// ── Room: Create ──
+async function createOnlineRoom(){
+  if(!fbDb){alert('Cannot connect to server. Check your internet connection.');return;}
+  const playerId=getSessionPlayerId();
+  const seed=Math.floor(Math.random()*999998)+1;
+  const code=String(500000+Math.floor(Math.random()*500000));
+  onlineRoomId=code;onlinePlayerId=playerId;onlineHosted=true;onlineMode=false;onlineWon=false;
+  const roomRef=fbDb.ref(`rooms/${code}`);
+  onlineRoomRef=roomRef;
+  try{
+    await roomRef.set({
+      createdAt:Date.now(),difficulty:cDiff||difficulty,seed,status:'waiting',
+      players:{[playerId]:{name:store.name,progress:0,mistakes:0,status:'waiting',lastSeen:Date.now()}}
+    });
+  }catch(e){
+    alert('Failed to create room. Please try again.');
+    onlineRoomRef=null;onlineRoomId=null;onlinePlayerId=null;onlineHosted=false;
+    return;
+  }
+  closeChallengeModal();
+  _showRoomWaitModal(code,false);
+  _listenRoomWaiting(roomRef,playerId);
+}
+
+// ── Room: Join ──
+async function tryJoinCode(){
+  const raw=(document.getElementById('pinInput').value||'').trim();
+  const errEl=document.getElementById('joinError');
+  if(!/^\d{6}$/.test(raw)){errEl.textContent='Enter a 6-digit code';return;}
+  errEl.textContent='';
+  const code=parseInt(raw);
+  // Firebase room range: 500000–999999
+  if(fbDb&&code>=500000){
+    errEl.textContent='🔍 Searching…';
+    try{
+      const snap=await fbDb.ref(`rooms/${raw}`).get();
+      if(snap.exists()){
+        const rd=snap.val();
+        if(rd.status!=='waiting'){errEl.textContent='This room is no longer accepting players.';return;}
+        errEl.textContent='';
+        await joinOnlineRoom(raw,rd);
+        return;
+      }
+    }catch(e){console.warn('[Firebase] join search error:',e);}
+    errEl.textContent='Room not found. Check the code and try again.';
+    return;
+  }
+  // Local PIN fallback (100000–499999)
+  const data=decodePin(raw);
+  if(!data){errEl.textContent='Invalid code. Check and try again.';return;}
+  errEl.textContent='';
+  closeChallengeModal();
+  startChallengeGame(data.difficulty,data.seed,raw);
+}
+
+async function joinOnlineRoom(code,roomData){
+  const playerId=getSessionPlayerId();
+  onlineRoomId=code;onlinePlayerId=playerId;onlineHosted=false;onlineMode=false;onlineWon=false;
+  cDiff=roomData.difficulty;
+  const roomRef=fbDb.ref(`rooms/${code}`);
+  onlineRoomRef=roomRef;
+  try{
+    await roomRef.child(`players/${playerId}`).set({name:store.name,progress:0,mistakes:0,status:'waiting',lastSeen:Date.now()});
+  }catch(e){
+    alert('Failed to join room. Please try again.');
+    onlineRoomRef=null;onlineRoomId=null;onlinePlayerId=null;
+    return;
+  }
+  closeChallengeModal();
+  _showRoomWaitModal(code,true);
+  _listenRoomWaiting(roomRef,playerId);
+}
+
+function _showRoomWaitModal(code,isJoining){
+  document.getElementById('roomCodeDisplay').textContent=code;
+  document.getElementById('roomWaitTitle').textContent=isJoining?'Joining Room!':'Room Created!';
+  document.getElementById('roomWaitStatus').textContent=isJoining?'Waiting for host to start…':'Waiting for opponent…';
+  const qrEl=document.getElementById('roomQrCode');qrEl.innerHTML='';
+  try{new QRCode(qrEl,{text:`${location.origin}${location.pathname}?room=${code}`,width:110,height:110});}catch(e){}
+  document.getElementById('roomPlayersList').innerHTML='';
+  document.getElementById('roomWaitModal').classList.add('on');
+}
+
+function _listenRoomWaiting(roomRef,myPlayerId){
+  roomRef.on('value',snap=>{
+    const data=snap.val();if(!data)return;
+    const players=data.players||{};
+    const pids=Object.keys(players);
+    // Refresh players list in wait modal
+    const listEl=document.getElementById('roomPlayersList');
+    listEl.innerHTML=pids.map(pid=>{
+      const p=players[pid],isMe=pid===myPlayerId;
+      return `<div class="room-player-row">
+        <span style="width:28px;height:28px;border-radius:50%;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:900;flex-shrink:0">${(p.name||'?')[0].toUpperCase()}</span>
+        <span style="font-size:.85rem;font-weight:700;color:var(--text);margin:0 8px;flex:1">${escHtml(p.name||'Player')}${isMe?' <span style="color:var(--primary)">(you)</span>':''}</span>
+        <span style="font-size:.75rem;color:${p.status==='waiting'?'var(--text-muted)':'#22c55e'}">${p.status==='waiting'?'⏳':'✓ Ready'}</span>
+      </div>`;
+    }).join('');
+    // Host starts when 2 players present
+    if(pids.length>=2&&onlineHosted&&data.status==='waiting'){
+      _launchOnlineGame(roomRef,myPlayerId,pids,data.seed,data.difficulty,data);
+    }
+    // Guest detects host started
+    if(!onlineHosted&&data.status==='playing'){
+      _launchOnlineGame(roomRef,myPlayerId,pids,data.seed,data.difficulty,data);
+    }
+  });
+}
+
+async function _launchOnlineGame(roomRef,myPlayerId,pids,seed,diff,roomData){
+  if(onlineMode)return; // already launched
+  onlineMode=true;
+  onlineOpponentId=pids.find(id=>id!==myPlayerId)||null;
+  try{
+    if(onlineHosted){
+      await roomRef.update({status:'playing',startedAt:Date.now()});
+    }
+    await roomRef.child(`players/${myPlayerId}/status`).set('playing');
+  }catch(e){console.warn('[Firebase] launch error:',e);}
+  document.getElementById('roomWaitModal').classList.remove('on');
+  roomRef.off('value'); // stop waiting listener
+  // Watch opponent progress
+  if(onlineOpponentId){
+    roomRef.child(`players/${onlineOpponentId}`).on('value',snap=>{
+      const opp=snap.val();if(!opp)return;
+      _updateOpponentBar(opp);
+      if(opp.status==='finished'&&!onlineWon&&!gameOver){
+        gameOver=true;clearInterval(timerID);
+        setTimeout(()=>showOnlineLose(opp.name,opp.finishTime),400);
+      }
+    });
+  }
+  // Show online UI
+  document.getElementById('onlineBadge').classList.add('show');
+  document.getElementById('opponentBar').classList.add('show');
+  if(onlineOpponentId&&roomData.players[onlineOpponentId]){
+    const opp=roomData.players[onlineOpponentId];
+    document.getElementById('oppName').textContent=opp.name||'Opponent';
+    document.getElementById('oppAvatar').textContent=(opp.name||'?')[0].toUpperCase();
+  }
+  // Start game with room's seeded puzzle
+  difficulty=diff;
+  rng=makeRng(seed);
+  clearInterval(timerID);
+  seconds=0;mistakes=0;paused=false;gameOver=false;notesMode=false;
+  undoStack=[];selected=null;window.hintCells=new Set();onlineWon=false;
+  dailyMode=false;challengeMode=false;tournamentMode=false;
+  document.getElementById('pauseOverlay').classList.remove('on');
+  document.getElementById('pauseBtn').textContent='⏸';
+  document.getElementById('notesBtn').classList.remove('on');
+  document.getElementById('dailyBadge').classList.remove('show');
+  document.getElementById('challengeBadge').classList.remove('show');
+  showScreen('scr-game');
+  syncGameDiff();updateMistakeDots();updateTimer();
+  const ov=document.getElementById('genOverlay');ov.classList.add('on');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const{puzzle:p,solution:s}=generatePuzzle(diff);
+    puzzle=p;solution=s;board=puzzle.map(r=>[...r]);
+    notesGrid=Array.from({length:9},()=>Array.from({length:9},()=>new Set()));
+    isGiven=puzzle.map(r=>r.map(v=>v!==0));
+    ov.classList.remove('on');startTimer();renderBoard();renderNumpad();
+  }));
+}
+
+function _updateOpponentBar(opp){
+  const prog=opp.progress||0,pct=Math.round(prog/81*100);
+  document.getElementById('oppProgressFill').style.width=pct+'%';
+  document.getElementById('oppPct').textContent=pct+'%';
+  document.getElementById('oppCells').textContent=`${prog}/81 cells`;
+  if(opp.name){
+    document.getElementById('oppName').textContent=opp.name;
+    document.getElementById('oppAvatar').textContent=(opp.name||'?')[0].toUpperCase();
+  }
+}
+
+function updateOnlineProgress(){
+  if(!onlineMode||!onlineRoomRef||!onlinePlayerId)return;
+  const filled=board.flat().filter((v,i)=>!isGiven[Math.floor(i/9)][i%9]&&v!==0).length;
+  onlineRoomRef.child(`players/${onlinePlayerId}`).update({progress:filled,mistakes,lastSeen:Date.now()}).catch(()=>{});
+}
+
+async function onlineFinish(){
+  if(!onlineMode||!onlineRoomRef||!onlinePlayerId||onlineWon)return;
+  onlineWon=true;
+  try{
+    await onlineRoomRef.child(`players/${onlinePlayerId}`).update({status:'finished',finishTime:seconds,progress:81,mistakes,lastSeen:Date.now()});
+    await onlineRoomRef.update({status:'closed',winner:onlinePlayerId});
+  }catch(e){console.warn('[Firebase] onlineFinish error:',e);}
+}
+
+function cancelRoom(){
+  if(onlineRoomRef&&onlinePlayerId){
+    onlineRoomRef.child(`players/${onlinePlayerId}/status`).set('disconnected').catch(()=>{});
+    if(onlineHosted)onlineRoomRef.child('status').set('cancelled').catch(()=>{});
+    onlineRoomRef.off();
+  }
+  document.getElementById('roomWaitModal').classList.remove('on');
+  onlineMode=false;onlineRoomId=null;onlineRoomRef=null;onlinePlayerId=null;
+  onlineHosted=false;onlineWon=false;
+}
+
+function cleanupOnlineMode(){
+  if(onlineRoomRef){
+    onlineRoomRef.off();
+    if(onlinePlayerId&&onlineMode){
+      onlineRoomRef.child(`players/${onlinePlayerId}`).update({status:'disconnected',lastSeen:Date.now()}).catch(()=>{});
+    }
+  }
+  onlineMode=false;onlineRoomId=null;onlineRoomRef=null;onlineOpponentId=null;
+  onlinePlayerId=null;onlineHosted=false;onlineWon=false;
+  const badge=document.getElementById('onlineBadge');if(badge)badge.classList.remove('show');
+  const bar=document.getElementById('opponentBar');if(bar)bar.classList.remove('show');
+}
+
+// ── Leaderboard ──
+let currentLbDiff='easy';
+
+function openLbModal(){
+  document.getElementById('lbModal').classList.add('on');
+  setLbDiff('easy',document.querySelector('.lb-tab[data-d="easy"]'));
+}
+function closeLbModal(){document.getElementById('lbModal').classList.remove('on');}
+
+function setLbDiff(diff,btn){
+  currentLbDiff=diff;
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadLeaderboard(diff);
+}
+
+async function loadLeaderboard(diff){
+  const body=document.getElementById('lbBody');
+  body.innerHTML='<div class="lb-loading">Loading…</div>';
+  if(!fbDb){body.innerHTML='<div class="lb-empty">Not connected to server</div>';return;}
+  try{
+    const snap=await fbDb.ref(`leaderboards/${diff}`).orderByChild('time').limitToFirst(20).get();
+    const entries=[];
+    snap.forEach(child=>entries.push({key:child.key,...child.val()}));
+    if(!entries.length){body.innerHTML='<div class="lb-empty">No entries yet — be the first!</div>';return;}
+    const myId=getDeviceId();
+    body.innerHTML=entries.map((e,i)=>{
+      const isMe=e.deviceId===myId;
+      const rc=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+      const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+      return `<div class="lb-entry${isMe?' mine':''}">
+        <span class="lb-rank ${rc}">${ri}</span>
+        <div class="lb-entry-info">
+          <div class="lb-entry-name">${escHtml(e.name||'Player')}${isMe?' 👤':''}</div>
+          <div class="lb-entry-meta">${e.mistakes===0?'✓ Perfect':`${e.mistakes} mistake${e.mistakes!==1?'s':''}`}</div>
+        </div>
+        <span class="lb-entry-time">${fmtTime(e.time)}</span>
+      </div>`;
+    }).join('');
+  }catch(e){
+    body.innerHTML='<div class="lb-empty">Failed to load. Check connection.</div>';
+    console.warn('[Firebase] LB load:',e);
+  }
+}
+
+async function submitToLeaderboard(diff,timeVal,mist){
+  if(!fbDb)return;
+  const deviceId=getDeviceId();
+  try{
+    // Only submit if it's a new personal best
+    const ex=await fbDb.ref(`leaderboards/${diff}`).orderByChild('deviceId').equalTo(deviceId).get();
+    let best=Infinity;
+    ex.forEach(s=>{const t=s.val().time;if(t<best)best=t;});
+    if(timeVal>=best)return; // not a new best
+  }catch(e){}
+  try{
+    fbDb.ref(`leaderboards/${diff}`).push({deviceId,name:store.name,time:timeVal,mistakes:mist,timestamp:Date.now()});
+  }catch(e){console.warn('[Firebase] LB submit:',e);}
+}
+
+// ── Tournament ──
+async function checkTournament(){
+  if(!fbDb)return;
+  try{
+    const snap=await fbDb.ref('tournaments').get();
+    if(!snap.exists())return;
+    const now=Date.now();let best=null;
+    snap.forEach(child=>{
+      const t=child.val();if(!t||!t.info)return;
+      const info=t.info;
+      if(info.startTime<=now&&info.endTime>now){
+        // Prefer daily over weekly
+        if(!best||child.key.startsWith('daily_'))best={id:child.key,...t};
+      }
+    });
+    if(best){activeTournament=best;tournamentId=best.id;renderTournamentCard(best);}
+  }catch(e){console.warn('[Firebase] Tournament check:',e);}
+}
+
+function renderTournamentCard(t){
+  const card=document.getElementById('tournamentCard');if(!card)return;
+  const info=t.info,isWeekly=t.id.startsWith('weekly_');
+  const diff=info.difficulty||'medium';
+  const timeLeft=info.endTime-Date.now();
+  const hrs=Math.floor(timeLeft/3600000),mins=Math.floor((timeLeft%3600000)/60000);
+  const timeStr=hrs>0?`${hrs}h ${mins}m left`:`${mins}m left`;
+  const entries=t.entries||{};
+  const count=Object.keys(entries).length;
+  const myId=getDeviceId();
+  const myEntry=entries[myId];
+  const times=Object.values(entries).map(e=>e.time).filter(v=>v>0);
+  const bestStr=times.length?`Best: ${fmtTime(Math.min(...times))}`:'No entries yet';
+  const mineStr=myEntry?`Your best: ${fmtTime(myEntry.time)}`:'Not played yet';
+  document.getElementById('tCardTitle').textContent=isWeekly?'🏆 Weekly Tournament':'📅 Daily Tournament';
+  document.getElementById('tCardSub').textContent=`${diff.charAt(0).toUpperCase()+diff.slice(1)} · ${timeStr}`;
+  document.getElementById('tCardBadge').textContent=isWeekly?'Weekly':'Daily';
+  document.getElementById('tCardPlayers').textContent=`${count} player${count!==1?'s':''}`;
+  document.getElementById('tCardBest').textContent=bestStr;
+  document.getElementById('tCardMine').textContent=mineStr;
+  card.style.display='block';
+}
+
+async function startTournamentGame(){
+  if(!activeTournament)return;
+  const info=activeTournament.info;
+  tournamentMode=true;tournamentId=activeTournament.id;
+  difficulty=info.difficulty||'medium';
+  rng=makeRng(info.seed);
+  clearInterval(timerID);
+  seconds=0;mistakes=0;paused=false;gameOver=false;notesMode=false;
+  undoStack=[];selected=null;window.hintCells=new Set();
+  dailyMode=false;challengeMode=false;
+  if(typeof cleanupOnlineMode==='function')cleanupOnlineMode();
+  document.getElementById('dailyBadge').classList.remove('show');
+  document.getElementById('challengeBadge').classList.add('show');
+  document.getElementById('challengeBadge').textContent='🏆 Tournament';
+  showScreen('scr-game');
+  syncGameDiff();updateMistakeDots();updateTimer();
+  const ov=document.getElementById('genOverlay');ov.classList.add('on');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const{puzzle:p,solution:s}=generatePuzzle(difficulty);
+    puzzle=p;solution=s;board=puzzle.map(r=>[...r]);
+    notesGrid=Array.from({length:9},()=>Array.from({length:9},()=>new Set()));
+    isGiven=puzzle.map(r=>r.map(v=>v!==0));
+    ov.classList.remove('on');startTimer();renderBoard();renderNumpad();
+  }));
+}
+
+async function submitTournamentScore(timeVal,mist){
+  if(!fbDb||!tournamentId)return;
+  const deviceId=getDeviceId();
+  try{
+    const ref=fbDb.ref(`tournaments/${tournamentId}/entries/${deviceId}`);
+    const ex=await ref.get();
+    if(ex.exists()&&ex.val().time<=timeVal)return; // not a new best
+    await ref.set({name:store.name,time:timeVal,mistakes:mist,submittedAt:Date.now()});
+    // Refresh card data locally
+    if(activeTournament){
+      if(!activeTournament.entries)activeTournament.entries={};
+      activeTournament.entries[deviceId]={name:store.name,time:timeVal,mistakes:mist};
+      renderTournamentCard(activeTournament);
+    }
+  }catch(e){console.warn('[Firebase] T-submit:',e);}
+}
+
+// ── Wire Challenge modal "Online Room" button ──
+document.getElementById('onlineRoomBtn')?.addEventListener('click',createOnlineRoom);
 
 // ═══════════════════════════════════════════════════
 //  BOOT
